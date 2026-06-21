@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📖 For My Love</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Dancing+Script:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="three.min.js"></script>
+<script>if(typeof THREE==='undefined'){document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>')}</script>
+<style>
+/* ═══════════════════════════════════════════
+   "LETTERS ACROSS LIGHT-YEARS" v2
+   Galaxy depth · aged starlight paper · rose-gold
+   ═══════════════════════════════════════════ */
+:root{
+  --void:#050310;
+  --void2:#0c0822;
+  --void3:#140b30;
+  --paper:#f5eddb;
+  --paper2:#ece1c9;
+  --ink-text:#3a2f4a;
+  --rose:#d98a9e;
+  --rose-deep:#c25e7a;
+  --ember:#e8a87c;
+  --gold:#e3c08d;
+  --star:#c4a0f7;
+  --pink:#f472b6;
+  --neb1:#7b3fa6;
+  --neb2:#3f5fa6;
+  --F:'Cormorant Garamond',serif;
+  --S:'Dancing Script',cursive;
+  --B:'Outfit',sans-serif;
+  --M:'JetBrains Mono',monospace;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{font-size:18px}
+body{
+  font-family:var(--B);
+  background:var(--void);
+  color:var(--paper);
+  min-height:100vh;min-height:100dvh;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  position:relative;
+}
+::selection{background:var(--rose);color:#fff}
+
+/* ═══════════ LAYERED GALAXY BACKGROUND ═══════════ */
+.galaxy-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+/* Nebula clouds — parallax layers */
+.nebula{
+  position:absolute;border-radius:50%;
+  filter:blur(60px);opacity:.35;
+  mix-blend-mode:screen;
+}
+.neb-a{
+  width:60vw;height:60vw;top:-10%;left:-15%;
+  background:radial-gradient(circle,#1f7fa6,transparent 70%);
+  animation:neb-drift1 28s ease-in-out infinite;
+}
+.neb-b{
+  width:55vw;height:55vw;bottom:-15%;right:-10%;
+  background:radial-gradient(circle,#2f9fc6,transparent 70%);
+  animation:neb-drift2 34s ease-in-out infinite;
+}
+.neb-c{
+  width:45vw;height:45vw;top:30%;right:5%;
+  background:radial-gradient(circle,#3f6fd6,transparent 70%);
+  animation:neb-drift3 40s ease-in-out infinite;
+}
+.neb-d{
+  width:40vw;height:40vw;bottom:10%;left:5%;
+  background:radial-gradient(circle,#2fb0c0,transparent 70%);
+  animation:neb-drift1 32s ease-in-out infinite reverse;
+}
+@keyframes neb-drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.1)}}
+@keyframes neb-drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-50px,20px) scale(1.15)}}
+@keyframes neb-drift3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,40px) scale(1.05)}}
+
+#stars{position:fixed;inset:0;z-index:1;pointer-events:none}
+#shootingStars{position:fixed;inset:0;z-index:1;pointer-events:none}
+
+/* ═══════════ FLOATING PETALS & FLOWERS ═══════════ */
+.petal{
+  position:fixed;z-index:2;pointer-events:none;
+  font-size:18px;opacity:0;
+  animation:petal-fall linear forwards;
+}
+@keyframes petal-fall{
+  0%{opacity:0;transform:translateY(-40px) rotate(0deg) translateX(0)}
+  10%{opacity:.6}
+  50%{transform:translateY(50vh) rotate(180deg) translateX(30px)}
+  90%{opacity:.6}
+  100%{opacity:0;transform:translateY(105vh) rotate(360deg) translateX(-20px)}
+}
+/* Corner flower clusters */
+.corner-flowers{position:fixed;z-index:2;pointer-events:none;font-size:1.7rem;opacity:.22;line-height:1.1;text-align:center}
+.cf-tl{top:6px;left:6px;animation:sway 6s ease-in-out infinite}
+.cf-tr{top:6px;right:6px;animation:sway 7s ease-in-out infinite reverse}
+.cf-bl{bottom:6px;left:6px;animation:sway 8s ease-in-out infinite}
+.cf-br{bottom:6px;right:6px;animation:sway 5s ease-in-out infinite reverse}
+@keyframes sway{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+/* Side vine flowers */
+.vine-flowers{
+  position:fixed;top:50%;transform:translateY(-50%);
+  z-index:2;pointer-events:none;font-size:1.3rem;
+  opacity:.15;line-height:1.4;text-align:center;
+}
+.vine-left{left:4px;animation:vine-sway 9s ease-in-out infinite}
+.vine-right{right:4px;animation:vine-sway 11s ease-in-out infinite reverse}
+@keyframes vine-sway{0%,100%{transform:translateY(-50%) rotate(-3deg)}50%{transform:translateY(-50%) rotate(3deg)}}
+@media(max-width:600px){.vine-flowers{font-size:1rem;opacity:.1}.corner-flowers{font-size:1.3rem}}
+
+/* ═══════════ INTRO ═══════════ */
+#intro{
+  position:fixed;inset:0;z-index:9999;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  background:radial-gradient(ellipse at center,rgba(12,8,34,.35),rgba(5,3,16,.75) 85%);
+  cursor:pointer;text-align:center;padding:24px;
+  transition:opacity 1.4s ease;
+}
+#intro.out{opacity:0;pointer-events:none}
+
+/* ═══════════ SOLAR SYSTEM (intro) ═══════════ */
+.solar{
+  width:min(340px,80vw);height:min(340px,80vw);
+  position:relative;margin-bottom:30px;
+  transform:rotateX(62deg);
+  transform-style:preserve-3d;
+}
+.sun{
+  position:absolute;top:50%;left:50%;
+  width:46px;height:46px;border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle at 40% 40%,#fff6d8,#ffcf66 40%,#ff9933 75%,#ff6600);
+  box-shadow:0 0 30px #ffaa33,0 0 60px #ff8800,0 0 90px rgba(255,120,0,.6);
+  animation:sun-pulse 3s ease-in-out infinite;z-index:20;
+}
+@keyframes sun-pulse{0%,100%{box-shadow:0 0 30px #ffaa33,0 0 60px #ff8800,0 0 90px rgba(255,120,0,.6)}50%{box-shadow:0 0 40px #ffcc44,0 0 80px #ff9900,0 0 120px rgba(255,140,0,.7)}}
+.sun-corona{
+  position:absolute;top:50%;left:50%;
+  width:70px;height:70px;border-radius:50%;
+  transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(255,170,50,.3),transparent 70%);
+  animation:corona 4s ease-in-out infinite;z-index:19;
+}
+@keyframes corona{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.6}50%{transform:translate(-50%,-50%) scale(1.3);opacity:.9}}
+
+.orbit{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  border:1px solid rgba(196,160,247,.12);
+  border-radius:50%;
+}
+.orbit::after{
+  /* the planet */
+  content:'';position:absolute;border-radius:50%;
+}
+.o1{width:90px;height:90px;animation:spin 4s linear infinite}
+.o1::after{width:7px;height:7px;top:-3px;left:calc(50% - 3px);background:#c8a16a;box-shadow:0 0 8px #c8a16a}
+.o2{width:130px;height:130px;animation:spin 7s linear infinite}
+.o2::after{width:10px;height:10px;top:-5px;left:calc(50% - 5px);background:#6ab7ff;box-shadow:0 0 10px #6ab7ff}
+.o3{width:175px;height:175px;animation:spin 10s linear infinite}
+.o3::after{width:11px;height:11px;top:-5px;left:calc(50% - 5px);background:#8fd4a0;box-shadow:0 0 12px #5fc47f}
+.o4{width:225px;height:225px;animation:spin 14s linear infinite}
+.o4::after{width:9px;height:9px;top:-4px;left:calc(50% - 4px);background:#ff7a5c;box-shadow:0 0 10px #ff5733}
+.o5{width:290px;height:290px;animation:spin 20s linear infinite}
+.o5::after{width:16px;height:16px;top:-8px;left:calc(50% - 8px);background:radial-gradient(circle at 40% 40%,#ffd9a0,#e8a87c);box-shadow:0 0 14px #e8a87c}
+/* Saturn ring */
+.o5 .ring{
+  position:absolute;top:-12px;left:calc(50% - 14px);
+  width:28px;height:24px;border-radius:50%;
+  border:2px solid rgba(227,192,141,.6);
+  transform:rotate(-20deg);
+}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+/* Floating heart instead of cold planet — "you are my center" */
+.intro-lines{max-width:560px}
+.intro-lines .il{
+  font-family:var(--F);font-weight:400;
+  font-size:clamp(1.1rem,3.2vw,1.5rem);
+  color:#bcaad0;line-height:1.7;margin-bottom:12px;
+  opacity:0;transform:translateY(18px);
+  transition:opacity .9s,transform .9s;font-style:italic;
+}
+.intro-lines .il.v{opacity:1;transform:translateY(0)}
+.intro-lines .il.accent{
+  font-family:var(--S);font-style:normal;
+  font-size:clamp(1.9rem,5vw,2.7rem);
+  color:var(--rose);font-weight:600;margin-top:18px;
+  text-shadow:0 0 30px rgba(217,138,158,.4);
+}
+.intro-hint{
+  position:absolute;bottom:44px;left:50%;transform:translateX(-50%);
+  font-family:var(--M);font-size:.7rem;color:#665a78;
+  letter-spacing:3px;text-transform:uppercase;
+  opacity:0;animation:hint-blink 2.5s ease-in-out infinite;
+}
+.intro-hint.v{opacity:1}
+@keyframes hint-blink{0%,100%{opacity:.3}50%{opacity:.8}}
+
+/* ═══════════ STAGE ═══════════ */
+.stage{
+  position:relative;z-index:5;
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  padding:70px 16px 40px;
+  opacity:0;transition:opacity 1.2s ease;
+}
+.stage.v{opacity:1}
+.stage-title{
+  font-family:var(--S);
+  font-size:clamp(1.7rem,5vw,2.5rem);
+  color:var(--rose);text-align:center;margin-bottom:6px;
+  text-shadow:0 0 25px rgba(217,138,158,.35);
+}
+.stage-sub{
+  font-family:var(--M);font-size:.62rem;
+  letter-spacing:3px;text-transform:uppercase;
+  color:#7d7290;text-align:center;margin-bottom:26px;
+}
+
+/* ═══════════ THE BOOK — ENHANCED 3D ═══════════ */
+.book-scene{
+  perspective:2400px;
+  perspective-origin:50% 30%;
+  width:100%;max-width:440px;
+  display:flex;justify-content:center;
+  position:relative;
+}
+/* Glow pool under book */
+.book-scene::after{
+  content:'';position:absolute;bottom:-30px;left:50%;
+  transform:translateX(-50%);
+  width:70%;height:40px;
+  background:radial-gradient(ellipse,rgba(217,138,158,.3),transparent 70%);
+  filter:blur(20px);z-index:-1;
+  animation:glow-pool 4s ease-in-out infinite;
+}
+@keyframes glow-pool{0%,100%{opacity:.5;width:70%}50%{opacity:.8;width:80%}}
+
+.book{
+  position:relative;
+  width:350px;height:490px;
+  transform-style:preserve-3d;
+  transition:transform 1.2s cubic-bezier(.4,.15,.2,1);
+  transform:rotateX(12deg) rotateY(-6deg) rotateZ(-1deg);
+  animation:book-float 6s ease-in-out infinite;
+}
+@keyframes book-float{
+  0%,100%{transform:rotateX(12deg) rotateY(-6deg) rotateZ(-1deg) translateY(0)}
+  50%{transform:rotateX(10deg) rotateY(-4deg) rotateZ(-1deg) translateY(-12px)}
+}
+@media(max-width:400px){
+  .book{width:300px;height:440px}
+}
+
+/* Book spine/base block for thickness illusion */
+.book-base{
+  position:absolute;inset:0;
+  background:linear-gradient(145deg,#1a1330,#2a1f3d);
+  border-radius:4px 12px 12px 4px;
+  transform:translateZ(-18px);
+  box-shadow:0 30px 60px rgba(0,0,0,.6);
+}
+.book-pages-edge{
+  position:absolute;top:3px;bottom:3px;right:-2px;width:14px;
+  background:repeating-linear-gradient(0deg,var(--paper) 0px,var(--paper) 1px,var(--paper2) 2px,var(--paper2) 3px);
+  border-radius:0 6px 6px 0;
+  transform:translateZ(-9px) rotateY(0deg);
+  transform-origin:right;
+}
+
+/* Each leaf */
+.leaf{
+  position:absolute;top:0;left:0;
+  width:100%;height:100%;
+  transform-style:preserve-3d;
+  transform-origin:left center;
+  transition:transform 1.3s cubic-bezier(.42,.1,.2,1);
+  cursor:pointer;
+}
+.leaf-face{
+  position:absolute;inset:0;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  overflow:hidden;
+  border-radius:4px 12px 12px 4px;
+  box-shadow:inset 0 0 80px rgba(120,90,60,.15);
+}
+.leaf-front{
+  background:linear-gradient(125deg,var(--paper) 0%,var(--paper2) 100%);
+  z-index:2;
+}
+.leaf-back{
+  background:linear-gradient(235deg,var(--paper) 0%,var(--paper2) 100%);
+  transform:rotateY(180deg);
+}
+.leaf-face::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 20% 30%,rgba(123,159,212,.12) 0.8px,transparent 1px),
+    radial-gradient(circle at 60% 70%,rgba(194,94,122,.1) 0.8px,transparent 1px),
+    radial-gradient(circle at 80% 20%,rgba(217,168,120,.12) 0.8px,transparent 1px),
+    radial-gradient(circle at 40% 85%,rgba(123,159,212,.1) 0.8px,transparent 1px),
+    repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(160,130,90,.05) 28px),
+    radial-gradient(circle at 0% 50%,rgba(120,90,50,.12),transparent 20%);
+  background-size:120px 120px,160px 160px,140px 140px,180px 180px,auto,auto;
+  pointer-events:none;
+}
+.leaf-front::after{
+  content:'';position:absolute;top:0;left:0;bottom:0;width:40px;
+  background:linear-gradient(90deg,rgba(90,60,30,.22),transparent);
+  pointer-events:none;
+}
+.leaf-back::after{
+  content:'';position:absolute;top:0;right:0;bottom:0;width:40px;
+  background:linear-gradient(270deg,rgba(90,60,30,.22),transparent);
+  pointer-events:none;
+}
+/* Subtle page curl highlight while turning */
+.leaf.flipped{transform:rotateY(-178deg)}
+
+/* Page content */
+.pg{
+  position:absolute;inset:0;
+  padding:40px 32px;
+  display:flex;flex-direction:column;
+  color:var(--ink-text);
+  overflow-y:auto;
+}
+.pg::-webkit-scrollbar{width:0}
+.pg{scrollbar-width:none}
+
+/* ═══════════ COVER ═══════════ */
+.cover{
+  background:
+    radial-gradient(ellipse at 30% 20%,rgba(217,138,158,.28),transparent 50%),
+    radial-gradient(ellipse at 70% 80%,rgba(196,160,247,.2),transparent 50%),
+    linear-gradient(145deg,#1a1330 0%,#2a1f3d 50%,#15102a 100%)!important;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  text-align:center;padding:40px 30px;color:var(--paper);
+}
+.cover::before{
+  content:'';position:absolute;inset:16px;
+  border:1px solid rgba(227,192,141,.45);
+  border-radius:4px;pointer-events:none;
+}
+.cover::after{
+  content:'';position:absolute;inset:22px;
+  border:1px solid rgba(227,192,141,.18);
+  border-radius:2px;pointer-events:none;
+}
+@keyframes core-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.cover-orbit{font-size:2.6rem;margin-bottom:18px;animation:core-pulse 3s ease-in-out infinite}
+.cover-kicker{
+  font-family:var(--M);font-size:.58rem;letter-spacing:4px;
+  text-transform:uppercase;color:var(--gold);margin-bottom:18px;
+}
+.cover-title{
+  font-family:var(--F);font-size:2.7rem;font-weight:600;
+  line-height:1.1;margin-bottom:4px;
+  background:linear-gradient(135deg,var(--gold),var(--rose),var(--ember));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.cover-script{
+  font-family:var(--S);font-size:2rem;color:var(--rose);
+  margin-bottom:28px;
+}
+.cover-seal{
+  width:64px;height:64px;border-radius:50%;
+  background:radial-gradient(circle,var(--rose-deep),var(--void3));
+  display:flex;justify-content:center;align-items:center;
+  font-size:1.6rem;border:2px solid rgba(227,192,141,.55);
+  box-shadow:0 0 22px rgba(217,138,158,.45);margin-bottom:22px;
+}
+.cover-by{font-family:var(--M);font-size:.62rem;letter-spacing:2px;color:#b3a3c0}
+.cover-flip-hint{
+  font-family:var(--M);font-size:.58rem;letter-spacing:2px;
+  text-transform:uppercase;color:var(--gold);
+  margin-top:16px;opacity:.7;
+  animation:hint-blink 2s ease-in-out infinite;
+}
+
+/* ═══════════ LETTER PAGES ═══════════ */
+/* Astronomical page decorations */
+.pg{position:relative}
+.pg::before{
+  /* faint constellation in top-right of each page */
+  content:'';position:absolute;top:14px;right:18px;
+  width:80px;height:60px;opacity:.5;pointer-events:none;
+  background-image:
+    radial-gradient(circle,#c25e7a 1.2px,transparent 1.5px),
+    radial-gradient(circle,#7b9fd4 1px,transparent 1.5px),
+    radial-gradient(circle,#c25e7a 1px,transparent 1.5px),
+    radial-gradient(circle,#d9a878 1.4px,transparent 1.5px),
+    radial-gradient(circle,#7b9fd4 1px,transparent 1.5px);
+  background-position:5px 8px,30px 2px,55px 18px,70px 5px,45px 40px;
+  background-repeat:no-repeat;
+}
+.pg::after{
+  /* tiny constellation connector lines */
+  content:'';position:absolute;top:14px;right:18px;
+  width:80px;height:60px;opacity:.25;pointer-events:none;
+  background:linear-gradient(125deg,transparent 48%,#c25e7a 49%,#c25e7a 50%,transparent 51%);
+  -webkit-mask:linear-gradient(#000,#000);
+  clip-path:polygon(8% 15%,38% 5%,70% 30%,88% 10%,58% 67%);
+}
+.pg-num{
+  font-family:var(--M);font-size:.58rem;letter-spacing:2px;
+  color:var(--rose-deep);margin-bottom:4px;
+  display:flex;align-items:center;gap:7px;
+}
+.pg-num::before{
+  /* little orbiting planet glyph */
+  content:'';width:12px;height:12px;border-radius:50%;
+  border:1px solid rgba(194,94,122,.35);position:relative;
+  background:
+    radial-gradient(circle at 50% 50%,#e3c08d 2px,transparent 2.5px);
+}
+.pg-eyebrow{
+  font-family:var(--M);font-size:.56rem;letter-spacing:2px;
+  text-transform:uppercase;color:#a0688a;opacity:.65;margin-bottom:18px;
+}
+.pg h3{
+  font-family:var(--F);font-size:1.75rem;font-weight:600;
+  color:var(--rose-deep);margin-bottom:16px;font-style:italic;
+}
+.pg p{
+  font-family:var(--F);font-size:1.2rem;line-height:1.6;
+  color:var(--ink-text);margin-bottom:13px;font-weight:500;
+}
+.pg .em{color:var(--rose-deep);font-style:italic}
+.pg .star-line{
+  font-family:var(--M);font-size:.6rem;color:#5878a8;
+  opacity:.6;letter-spacing:1px;margin:6px 0 14px;
+  padding-left:16px;position:relative;
+}
+.pg .star-line::before{content:'✦';position:absolute;left:0;color:#7b9fd4}
+.pg .sign{
+  font-family:var(--S);font-size:1.5rem;color:var(--rose-deep);
+  margin-top:auto;padding-top:16px;text-align:right;
+}
+/* Celestial divider — orbit with planets instead of hearts */
+.pg .heart-divide{
+  text-align:center;color:var(--rose);font-size:1rem;
+  margin:14px 0;letter-spacing:6px;opacity:.7;
+}
+.pg .cosmic-divide{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  margin:16px 0;opacity:.6;
+}
+.pg .cosmic-divide::before,.pg .cosmic-divide::after{
+  content:'';height:1px;flex:1;max-width:70px;
+  background:linear-gradient(90deg,transparent,#c25e7a,transparent);
+}
+.pg .cosmic-divide span{font-size:.9rem;letter-spacing:4px}
+/* Shayari styling */
+.shayari{
+  font-family:var(--F);font-style:italic;font-size:1.22rem;
+  line-height:1.55;color:var(--ink-text);text-align:center;
+  margin-bottom:14px;
+}
+.shayari .em{color:var(--rose-deep)}
+
+/* Final page */
+.pg-final{justify-content:center;align-items:center;text-align:center}
+.pg-final .big-q{
+  font-family:var(--F);font-size:1.9rem;font-weight:600;
+  color:var(--rose-deep);font-style:italic;line-height:1.3;
+  margin-bottom:24px;
+}
+.pg-final .final-btns{
+  display:flex;gap:14px;align-items:center;justify-content:center;
+  flex-wrap:wrap;position:relative;min-height:54px;
+}
+.pg-final .ask-btn{
+  font-family:var(--B);font-size:1rem;font-weight:600;
+  background:linear-gradient(135deg,var(--rose),var(--rose-deep));
+  color:#fff;border:none;padding:14px 36px;border-radius:30px;
+  cursor:pointer;transition:all .3s;
+  box-shadow:0 8px 24px rgba(194,94,122,.4);letter-spacing:.5px;
+}
+.pg-final .ask-btn:hover,.pg-final .ask-btn:active{
+  transform:translateY(-3px) scale(1.04);
+  box-shadow:0 12px 34px rgba(194,94,122,.55);
+}
+.pg-final .no-btn{
+  font-family:var(--B);font-size:1rem;font-weight:600;
+  background:linear-gradient(135deg,#5a5a72,#3e3e52);
+  color:#d8d8e0;border:none;padding:14px 32px;border-radius:30px;
+  cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35);
+  letter-spacing:.5px;
+  transition:transform .18s ease,opacity .3s ease,left .25s ease,top .25s ease;
+}
+.no-btn.flee{position:fixed;z-index:3000;margin:0}
+/* blast pieces */
+.no-shard{
+  position:fixed;pointer-events:none;z-index:3001;font-size:14px;
+  animation:shard-fly .9s ease-out forwards;
+}
+@keyframes shard-fly{
+  0%{opacity:1;transform:translate(0,0) scale(1) rotate(0)}
+  100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.4) rotate(var(--dr))}
+}
+.pg-final .final-note{
+  font-family:var(--M);font-size:.6rem;color:#a0688a;
+  margin-top:20px;letter-spacing:1px;opacity:.6;
+}
+
+/* ═══════════ CENTERED FINALE OVERLAY ═══════════ */
+.finale-overlay{
+  position:fixed;inset:0;z-index:2500;
+  display:flex;justify-content:center;align-items:center;
+  padding:24px;opacity:0;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(8,5,24,.7),rgba(3,2,12,.92));
+  backdrop-filter:blur(3px);
+  transition:opacity .8s ease;
+}
+.finale-overlay.show{opacity:1;pointer-events:auto}
+.finale-card{
+  position:relative;text-align:center;max-width:440px;width:100%;
+  padding:40px 28px;border-radius:24px;
+  background:linear-gradient(160deg,rgba(26,19,48,.9),rgba(15,10,34,.9));
+  border:1px solid rgba(217,138,158,.3);
+  box-shadow:0 0 50px rgba(217,138,158,.15),inset 0 0 40px rgba(123,159,212,.05);
+}
+.finale-card::before{
+  content:'';position:absolute;inset:-1px;border-radius:24px;
+  background:linear-gradient(135deg,#7fdfff,#c4a0f7,#f472b6,#7fdfff);
+  background-size:300% 300%;animation:nflow 5s linear infinite;
+  z-index:-1;opacity:.4;filter:blur(6px);
+}
+.finale-orbit{font-size:2.4rem;margin-bottom:14px;animation:core-pulse 3s ease-in-out infinite}
+.finale-q{
+  font-family:var(--F);font-size:1.9rem;font-weight:600;
+  color:#fff;font-style:italic;line-height:1.3;margin-bottom:8px;
+}
+.finale-q span{
+  background:linear-gradient(135deg,var(--gold),var(--rose),var(--ember));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.finale-await{font-family:var(--M);font-size:.66rem;color:#8b9fcf;margin-bottom:22px;letter-spacing:1px}
+.finale-card .final-btns{
+  display:flex;gap:14px;align-items:center;justify-content:center;
+  flex-wrap:wrap;position:relative;min-height:54px;
+}
+.finale-card .ask-btn{
+  font-family:var(--B);font-size:1.05rem;font-weight:600;
+  background:linear-gradient(135deg,var(--rose),var(--rose-deep));
+  color:#fff;border:none;padding:15px 38px;border-radius:30px;
+  cursor:pointer;transition:all .3s;
+  box-shadow:0 8px 24px rgba(194,94,122,.4);letter-spacing:.5px;
+}
+.finale-card .ask-btn:hover,.finale-card .ask-btn:active{
+  transform:translateY(-3px) scale(1.05);
+  box-shadow:0 12px 34px rgba(194,94,122,.6);
+}
+.finale-card .no-btn{
+  font-family:var(--B);font-size:1rem;font-weight:600;
+  background:linear-gradient(135deg,#4a4a64,#34344a);
+  color:#d8d8e0;border:none;padding:15px 34px;border-radius:30px;
+  cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.4);letter-spacing:.5px;
+  transition:transform .18s ease,opacity .3s ease,left .25s ease,top .25s ease;
+}
+.finale-card .final-note{
+  font-family:var(--M);font-size:.62rem;color:#a0688a;
+  margin-top:22px;letter-spacing:1px;opacity:.7;
+}
+
+/* ═══════════ NAV ═══════════ */
+.book-nav{display:flex;gap:16px;align-items:center;margin-top:38px}
+.nav-btn{
+  width:54px;height:54px;border-radius:50%;
+  background:rgba(217,138,158,.12);
+  border:1px solid rgba(217,138,158,.3);
+  color:var(--rose);font-size:1.3rem;cursor:pointer;
+  display:flex;justify-content:center;align-items:center;
+  transition:all .3s;backdrop-filter:blur(10px);
+}
+.nav-btn:hover,.nav-btn:active{
+  background:rgba(217,138,158,.25);transform:scale(1.1);
+  box-shadow:0 0 20px rgba(217,138,158,.35);
+}
+.nav-btn:disabled{opacity:.25;cursor:default;transform:none;box-shadow:none}
+.nav-progress{
+  font-family:var(--M);font-size:.68rem;color:#9d92b0;
+  letter-spacing:1px;min-width:60px;text-align:center;
+}
+
+/* ═══════════ MUSIC ═══════════ */
+.music-btn{
+  position:fixed;bottom:18px;right:18px;
+  width:50px;height:50px;border-radius:50%;
+  background:rgba(12,8,34,.8);
+  border:1px solid rgba(217,138,158,.3);
+  cursor:pointer;z-index:1000;
+  display:flex;justify-content:center;align-items:center;
+  transition:all .3s;backdrop-filter:blur(12px);
+}
+.music-btn:hover{transform:scale(1.1);box-shadow:0 0 20px rgba(217,138,158,.3)}
+.mb{display:flex;gap:2px;height:18px;align-items:flex-end}
+.mbar{width:3px;background:var(--rose);border-radius:2px;height:3px;transition:height .15s}
+.music-btn.on .mbar{animation:bd .45s ease-in-out infinite}
+.music-btn.on .mbar:nth-child(1){height:7px;animation-delay:0s}
+.music-btn.on .mbar:nth-child(2){height:15px;animation-delay:.08s}
+.music-btn.on .mbar:nth-child(3){height:11px;animation-delay:.16s}
+.music-btn.on .mbar:nth-child(4){height:17px;animation-delay:.12s}
+@keyframes bd{0%,100%{transform:scaleY(1)}50%{transform:scaleY(.3)}}
+
+/* ═══════════ HEARTS BURST ═══════════ */
+.burst-heart{
+  position:fixed;pointer-events:none;z-index:2000;
+  animation:burst-up 1.5s ease-out forwards;
+}
+@keyframes burst-up{
+  0%{opacity:1;transform:scale(0) translateY(0)}
+  40%{opacity:1;transform:scale(1.3) translateY(-45px)}
+  100%{opacity:0;transform:scale(.8) translateY(-130px)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.4s!important}
+  .book{animation:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════ GALAXY BACKGROUND ═══════ -->
+<div class="galaxy-bg">
+  <div class="nebula neb-a"></div>
+  <div class="nebula neb-b"></div>
+  <div class="nebula neb-c"></div>
+  <div class="nebula neb-d"></div>
+</div>
+<canvas id="galaxy3d" style="position:fixed;inset:0;z-index:3;pointer-events:none"></canvas>
+<canvas id="stars"></canvas>
+<canvas id="shootingStars"></canvas>
+
+<!-- corner flowers -->
+<div class="corner-flowers cf-tl">🌸🌷<br>🌹🌺<br>🌼</div>
+<div class="corner-flowers cf-tr">🌷🌸<br>🌺🌹<br>&nbsp;🌼</div>
+<div class="corner-flowers cf-bl">🌼🌹<br>🌺🌸<br>🌷</div>
+<div class="corner-flowers cf-br">🌹🌼<br>🌸🌺<br>&nbsp;🌷</div>
+<!-- side vine flowers -->
+<div class="vine-flowers vine-left">🌸<br>🌿<br>🌷<br>🌿<br>🌹<br>🌿<br>🌺</div>
+<div class="vine-flowers vine-right">🌺<br>🌿<br>🌹<br>🌿<br>🌷<br>🌿<br>🌸</div>
+
+<!-- ═══════ INTRO ═══════ -->
+<div id="intro">
+  <div style="height:min(300px,55vh)"></div>
+  <div class="intro-lines" id="iLines">
+    <div class="il" id="il1">Some messages travel across continents.</div>
+    <div class="il" id="il2">This one travelled across light-years to reach you.</div>
+    <div class="il" id="il3">A book — written in the language of stars and midnight calls.</div>
+    <div class="il accent" id="il4">For my love. Only you.</div>
+  </div>
+  <div class="intro-hint" id="iHint">tap to open the book</div>
+</div>
+
+<!-- ═══════ MUSIC ═══════ -->
+<button class="music-btn" id="mB" onclick="toggleMusic()">
+  <div class="mb"><div class="mbar"></div><div class="mbar"></div><div class="mbar"></div><div class="mbar"></div></div>
+</button>
+<audio id="bgM" loop preload="metadata"><source src="song.mp3" type="audio/mpeg"></audio>
+
+<!-- ═══════ STAGE ═══════ -->
+<div class="stage" id="stage">
+  <h1 class="stage-title">A Book For My Love</h1>
+  <p class="stage-sub">tap pages · swipe · or use the arrows</p>
+
+  <div class="book-scene">
+    <div class="book" id="book">
+      <div class="book-base"></div>
+      <div class="book-pages-edge"></div>
+
+      <!-- COVER (leaf 0) -->
+      <div class="leaf" data-leaf="0" style="z-index:100">
+        <div class="leaf-face leaf-front cover">
+          <div class="cover-orbit">🌌</div>
+          <div class="cover-kicker">transmission · received</div>
+          <h2 class="cover-title">Dear You</h2>
+          <div class="cover-script">my love, my lady</div>
+          <div class="cover-seal">💖</div>
+          <div class="cover-by">// authored from Dresden, with every atom</div>
+          <div class="cover-flip-hint">tap to begin →</div>
+        </div>
+        <div class="leaf-face leaf-back">
+          <div class="pg">
+            <div class="pg-eyebrow">before you read</div>
+            <p style="font-family:var(--S);font-size:1.5rem;color:var(--rose-deep);text-align:center;margin-top:24px;line-height:1.4">
+              Before you turn the page...
+            </p>
+            <p style="text-align:center;font-style:italic;margin-top:10px">
+              Read it slowly. <span class="em">There's no rush.</span>
+            </p>
+            <p style="text-align:center;font-style:italic">
+              Every word here is true — a little dramatic, a little cosmic, and entirely <span class="em">yours</span>. 💕
+            </p>
+            <div class="cosmic-divide"><span>☾ ✦ ☽</span></div>
+            <p style="text-align:center;font-family:var(--M);font-size:.66rem;color:#a0688a;opacity:.6">
+              turn the page →
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- LETTER 1 (leaf 1) — the midnight call -->
+      <div class="leaf" data-leaf="1" style="z-index:99">
+        <div class="leaf-face leaf-front">
+          <div class="pg">
+            <div class="pg-num">letter 01</div>
+            <div class="pg-eyebrow">your midnight, my evening</div>
+            <h3>My love,</h3>
+            <p>Every night, when the clock strikes <span class="em">twelve</span> in Nepal, you stay — even though the stars are already telling you to sleep.</p>
+            <p>And at <span class="em">five in the morning</span>, you rise again for your classroom, for your students, for the world you carry so well.</p>
+            <p>You give me those midnight hours knowing what they cost you. I don't take a single one for granted. 🌙</p>
+            <div class="star-line">// your timezone and mine, stitched together every night</div>
+            <div class="sign">— yours, always</div>
+          </div>
+        </div>
+        <div class="leaf-face leaf-back">
+          <div class="pg">
+            <div class="pg-num">letter 01 · continued</div>
+            <p>I'm the quiet one. The <span class="em">data person</span> — careful, measured, a little too soft sometimes.</p>
+            <p>And you? You're all <span class="em">fire and curiosity</span> — lighting up about code, about space, about a new idea at midnight like it's the most thrilling thing in the universe.</p>
+            <p>Watching you get excited about the things I love too? That's my favourite view in any galaxy. 💫</p>
+            <div class="cosmic-divide"><span>✦ ✧ ✦</span></div>
+            <p style="font-family:var(--S);font-size:1.35rem;color:var(--rose-deep);text-align:center">
+              You make the stars feel closer. 🌌
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- LETTER 2 (leaf 2) — strong her, soft me -->
+      <div class="leaf" data-leaf="2" style="z-index:98">
+        <div class="leaf-face leaf-front">
+          <div class="pg">
+            <div class="pg-num">letter 02</div>
+            <div class="pg-eyebrow">you lead, I follow — gladly</div>
+            <h3>Here's a secret...</h3>
+            <p>You are <span class="em">strong</span>. You decide, you take charge, you know exactly what you want — and you're usually right.</p>
+            <p>And me? I love being led by you. I love your <span class="em">control</span>, your certainty, the way you pull me along.</p>
+            <p>You're the strength, I'm the softness. Somehow that's the most <span class="em">perfect balance</span> I've ever known. 🤍</p>
+            <div class="star-line">// you: the architect · me: happily yours to direct</div>
+            <div class="sign">— led by you</div>
+          </div>
+        </div>
+        <div class="leaf-face leaf-back">
+          <div class="pg">
+            <div class="pg-num">letter 02 · continued</div>
+            <p>People think the strong one and the soft one don't fit. They've never seen <span class="em">us</span>.</p>
+            <p>We don't fight. We don't quarrel. We just... <span class="em">orbit</span> — two bodies held by the same quiet gravity. 🪐</p>
+            <p>You hold the map. I hold your hand. And honestly? I wouldn't want it any other way.</p>
+            <div class="cosmic-divide"><span>☾ ✦ ☽</span></div>
+            <p style="text-align:center;font-style:italic">Lead me anywhere, my lady. I'm already following.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- LETTER 3 (leaf 3) — the shayari -->
+      <div class="leaf" data-leaf="3" style="z-index:97">
+        <div class="leaf-face leaf-front">
+          <div class="pg">
+            <div class="pg-num">letter 03</div>
+            <div class="pg-eyebrow">a little shayari, engineer style</div>
+            <h3>Some verses for you 🌹</h3>
+            <p class="shayari">Tareef ab main teri karun<br>ya tujhe banane wale ki —</p>
+            <p class="shayari">tujhe dekh ke <span class="em">compile</span> ho jaate hain<br>mere saare bikhre khayaal bhi. 💕</p>
+            <div class="cosmic-divide"><span>✦ ✧ ✦</span></div>
+            <p class="shayari">Tu meri zindagi ki movie ki<br><span class="em">heroine</span> ban ke reh,</p>
+            <p class="shayari">main baaki saare <span class="em">bugs</span> fix kar dunga,<br>tu bas meri ho ke reh. 😘</p>
+            <div class="sign">— tera shayar</div>
+          </div>
+        </div>
+        <div class="leaf-face leaf-back">
+          <div class="pg">
+            <div class="pg-num">letter 03 · continued</div>
+            <p>You're an astrophile. So am I. We both look up at the same sky — just from <span class="em">different corners of it</span>.</p>
+            <p>You're an IT engineer. I'm a software engineer. We both build <span class="em">systems</span> for a living.</p>
+            <p>But the best system either of us will ever build is this one — <span class="em">us</span>. No bugs. Just an infinite loop. 💖</p>
+            <div class="star-line">// two engineers · one stable build · zero downtime</div>
+            <p style="font-family:var(--S);font-size:1.4rem;color:var(--rose-deep);text-align:center;margin-top:12px">
+              You + Me = the only constant. ✨
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- LETTER 4 + FINALE (leaf 4) -->
+      <!-- LETTER 5 (leaf 4) — our someday in Dresden -->
+      <div class="leaf" data-leaf="4" style="z-index:96">
+        <div class="leaf-face leaf-front">
+          <div class="pg">
+            <div class="pg-num">letter 05</div>
+            <div class="pg-eyebrow">a future I keep rendering</div>
+            <h3>Picture this...</h3>
+            <p>One day soon, the calls won't have to end at your midnight. You'll be <span class="em">here</span> — same city, same sky, same timezone.</p>
+            <p>We'll walk along the <span class="em">Elbe</span> at dusk, argue about black holes and best programming languages, and watch the same stars from the <span class="em">same window</span>. 🌃</p>
+            <p>No more counting hours between us. Just us, finally on the <span class="em">same orbit</span>.</p>
+            <div class="star-line">// distance: deprecated · status: together</div>
+            <div class="sign">— saving you a seat in Dresden</div>
+          </div>
+        </div>
+        <div class="leaf-face leaf-back">
+          <div class="pg">
+            <div class="pg-num">letter 05 · continued</div>
+            <p>I'm a data person, so let me give you the numbers that matter:</p>
+            <p><span class="em">One</span> sky we both love. <span class="em">Two</span> engineers who build worlds. <span class="em">Countless</span> midnights you've gifted me. And <span class="em">infinite</span> ones still ahead. ♾️</p>
+            <div class="cosmic-divide"><span>✦ ✧ ✦</span></div>
+            <p style="font-family:var(--S);font-size:1.4rem;color:var(--rose-deep);text-align:center">
+              Every star I count leads back to you. 🌟
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINALE (leaf 5) -->
+      <div class="leaf" data-leaf="5" style="z-index:95">
+        <div class="leaf-face leaf-front">
+          <div class="pg">
+            <div class="pg-num">letter 06</div>
+            <div class="pg-eyebrow">the part I mean the most</div>
+            <h3>One last thing...</h3>
+            <p>You once told me you want to <span class="em">be mine</span>. That you want to live wherever my heart is — wherever it feels at home.</p>
+            <p>Do you know what that did to me? A soft, quiet, data-driven person doesn't have words for a feeling that <span class="em">large</span>. 🥹</p>
+            <p>So I'll say it simply: my heart already lives wherever <span class="em">you</span> are. Always has.</p>
+            <div class="star-line">// home isn't a place — it's your voice at midnight</div>
+            <div class="sign">— entirely yours</div>
+          </div>
+        </div>
+        <div class="leaf-face leaf-back">
+          <div class="pg pg-final">
+            <div class="cover-orbit" style="font-size:2rem">🌸</div>
+            <p class="big-q">My love,<br>will you stay<br>mine — always? 💕</p>
+            <p style="font-family:var(--M);font-size:.66rem;color:#a0688a;margin-bottom:8px">// one question remains...</p>
+            <p style="font-family:var(--S);font-size:1.3rem;color:var(--rose-deep)">answer below ↓</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="book-nav">
+    <button class="nav-btn" id="prevBtn" onclick="prevPage()">←</button>
+    <span class="nav-progress" id="prog">cover</span>
+    <button class="nav-btn" id="nextBtn" onclick="nextPage()">→</button>
+  </div>
+</div>
+
+<!-- ═══════ CENTERED FINALE OVERLAY (the question + buttons) ═══════ -->
+<div class="finale-overlay" id="finaleOverlay">
+  <div class="finale-card">
+    <div class="finale-orbit">🌸</div>
+    <p class="finale-q">My love,<br>will you stay mine — <span>always?</span> 💕</p>
+    <p class="finale-await">// awaiting your response...</p>
+    <div class="final-btns" id="finalBtns">
+      <button class="ask-btn" id="yesBtn">Yes, always 🥺💖</button>
+      <button class="no-btn" id="noBtn">No</button>
+    </div>
+    <p class="final-note" id="finalNote">— from Dresden, with every atom, yours ❤️</p>
+  </div>
+</div>
+
+<script>
+const $=s=>document.getElementById(s);
+
+// ═══ THREE.JS COSMIC SHOWCASE — solar system + galaxy + Andromeda + pulsar ═══
+(function initCosmos3D(){
+  if(typeof THREE==='undefined'){console.log('Three.js not loaded');return}
+  const canvas=$('galaxy3d');
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,0.1,2000);
+  camera.position.set(0,16,52);
+  camera.lookAt(0,8,0);
+
+  // Lighting for the planets
+  const sunLight=new THREE.PointLight(0xffddaa,3,300);
+  sunLight.position.set(0,0,0);
+  scene.add(sunLight);
+  scene.add(new THREE.AmbientLight(0x404060,0.6));
+
+  // ── SPIRAL GALAXY builder ──
+  function makeGalaxy(count,radius,branches,spin,randomness,inColor,outColor,yScale,size){
+    const geo=new THREE.BufferGeometry();
+    const pos=new Float32Array(count*3);
+    const col=new Float32Array(count*3);
+    const ci=new THREE.Color(inColor),co=new THREE.Color(outColor);
+    for(let i=0;i<count;i++){
+      const i3=i*3;
+      const r=Math.pow(Math.random(),0.6)*radius;
+      const branchAngle=((i%branches)/branches)*Math.PI*2;
+      const spinAngle=r*spin;
+      const rx=Math.pow(Math.random(),3)*(Math.random()<.5?1:-1)*randomness*r;
+      const ry=Math.pow(Math.random(),3)*(Math.random()<.5?1:-1)*randomness*r*yScale;
+      const rz=Math.pow(Math.random(),3)*(Math.random()<.5?1:-1)*randomness*r;
+      pos[i3]=Math.cos(branchAngle+spinAngle)*r+rx;
+      pos[i3+1]=ry;
+      pos[i3+2]=Math.sin(branchAngle+spinAngle)*r+rz;
+      const mixed=ci.clone().lerp(co,r/radius);
+      col[i3]=mixed.r;col[i3+1]=mixed.g;col[i3+2]=mixed.b;
+    }
+    geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+    const mat=new THREE.PointsMaterial({size:size||0.12,sizeAttenuation:true,depthWrite:false,blending:THREE.AdditiveBlending,vertexColors:true,transparent:true,opacity:0.95});
+    return new THREE.Points(geo,mat);
+  }
+
+  // Main spiral galaxy — BIG, behind the solar system, upper area
+  const galaxy=makeGalaxy(14000,26,5,0.85,0.22,'#a0f0ff','#4060d0',0.16,0.13);
+  galaxy.rotation.x=0.62;
+  galaxy.position.set(-6,30,-45);
+  scene.add(galaxy);
+
+  // Andromeda — distant tilted galaxy, upper right
+  const andromeda=makeGalaxy(7000,16,4,1.0,0.2,'#d0f8ff','#3f8fcf',0.15,0.11);
+  andromeda.position.set(34,22,-70);
+  andromeda.rotation.set(0.9,0.3,0.5);
+  scene.add(andromeda);
+
+  // ── SOLAR SYSTEM (the big rotating hero) ──
+  const solarSystem=new THREE.Group();
+  scene.add(solarSystem);
+
+  // ---- Procedural sun surface texture (granulation + warm gradient) ----
+  function makeSunTexture(){
+    const c=document.createElement('canvas');c.width=c.height=512;
+    const g=c.getContext('2d');
+    // base radial warmth
+    const rad=g.createRadialGradient(256,256,40,256,256,256);
+    rad.addColorStop(0,'#fff6cf');
+    rad.addColorStop(0.45,'#ffd45e');
+    rad.addColorStop(0.8,'#ff8a1e');
+    rad.addColorStop(1,'#e24a06');
+    g.fillStyle=rad;g.fillRect(0,0,512,512);
+    // granulation cells
+    for(let i=0;i<2600;i++){
+      const x=Math.random()*512,y=Math.random()*512,r=Math.random()*7+1.5;
+      const b=Math.random();
+      g.beginPath();g.arc(x,y,r,0,Math.PI*2);
+      g.fillStyle=b>0.5?`rgba(255,${220+~~(Math.random()*35)},150,${Math.random()*0.5})`
+                       :`rgba(${180+~~(Math.random()*40)},90,20,${Math.random()*0.45})`;
+      g.fill();
+    }
+    // brighter plage patches
+    for(let i=0;i<40;i++){
+      const x=Math.random()*512,y=Math.random()*512,r=Math.random()*30+10;
+      const rg=g.createRadialGradient(x,y,0,x,y,r);
+      rg.addColorStop(0,'rgba(255,250,210,0.5)');rg.addColorStop(1,'rgba(255,250,210,0)');
+      g.fillStyle=rg;g.beginPath();g.arc(x,y,r,0,Math.PI*2);g.fill();
+    }
+    const tex=new THREE.CanvasTexture(c);
+    tex.wrapS=tex.wrapT=THREE.RepeatWrapping;
+    return tex;
+  }
+  const sunTex=makeSunTexture();
+
+  // Sun core — emissive, textured, self-lit
+  const sun=new THREE.Mesh(
+    new THREE.SphereGeometry(3.4,64,64),
+    new THREE.MeshStandardMaterial({
+      map:sunTex,emissive:0xff7a18,emissiveMap:sunTex,emissiveIntensity:1.4,
+      roughness:1,metalness:0
+    })
+  );
+  solarSystem.add(sun);
+
+  // Fresnel rim shell — gives the 3D limb-darkened glow edge
+  const sunRim=new THREE.Mesh(
+    new THREE.SphereGeometry(3.7,64,64),
+    new THREE.ShaderMaterial({
+      transparent:true,blending:THREE.AdditiveBlending,side:THREE.BackSide,depthWrite:false,
+      uniforms:{c:{value:0.4},p:{value:3.2},glowColor:{value:new THREE.Color(0xffb14a)}},
+      vertexShader:`varying float i;void main(){vec3 vn=normalize(normalMatrix*normal);vec3 vp=normalize((modelViewMatrix*vec4(position,1.0)).xyz);i=pow(0.7-dot(vn,-vp),3.2);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+      fragmentShader:`uniform vec3 glowColor;varying float i;void main(){gl_FragColor=vec4(glowColor,1.0)*clamp(i,0.0,1.0);}`
+    })
+  );
+  solarSystem.add(sunRim);
+
+  // Camera-facing corona sprite (soft volumetric halo)
+  function makeGlowSprite(size,color,opacity){
+    const c=document.createElement('canvas');c.width=c.height=256;
+    const g=c.getContext('2d');
+    const rg=g.createRadialGradient(128,128,0,128,128,128);
+    rg.addColorStop(0,color);rg.addColorStop(0.25,color);
+    rg.addColorStop(1,'rgba(255,150,40,0)');
+    g.fillStyle=rg;g.fillRect(0,0,256,256);
+    const tex=new THREE.CanvasTexture(c);
+    const mat=new THREE.SpriteMaterial({map:tex,transparent:true,blending:THREE.AdditiveBlending,opacity,depthWrite:false});
+    const s=new THREE.Sprite(mat);s.scale.set(size,size,1);
+    return s;
+  }
+  const corona=makeGlowSprite(16,'rgba(255,180,80,0.9)',0.85);
+  solarSystem.add(corona);
+  const coronaWide=makeGlowSprite(26,'rgba(255,110,30,0.6)',0.5);
+  solarSystem.add(coronaWide);
+
+  // Strong light from the sun
+  sunLight.position.set(0,0,0);
+  sunLight.intensity=2.6;
+  solarSystem.add(sunLight);
+
+  // ---- Procedural planet texture helper ----
+  function makePlanetTexture(base,accent,bands){
+    const c=document.createElement('canvas');c.width=256;c.height=128;
+    const g=c.getContext('2d');
+    g.fillStyle=base;g.fillRect(0,0,256,128);
+    if(bands){
+      for(let y=0;y<128;y+=2){
+        const n=Math.sin(y*0.18)+Math.sin(y*0.07);
+        g.fillStyle=n>0?accent:base;
+        g.globalAlpha=0.25+Math.abs(n)*0.25;
+        g.fillRect(0,y,256,2);
+      }
+      g.globalAlpha=1;
+    }else{
+      for(let i=0;i<260;i++){
+        const x=Math.random()*256,y=Math.random()*128,r=Math.random()*14+3;
+        g.beginPath();g.arc(x,y,r,0,Math.PI*2);
+        g.fillStyle=Math.random()>0.5?accent:base;g.globalAlpha=Math.random()*0.4;g.fill();
+      }
+      g.globalAlpha=1;
+    }
+    return new THREE.CanvasTexture(c);
+  }
+
+  // Planet factory — lit, with atmosphere rim
+  const planets=[];
+  function addPlanet(dist,size,base,accent,speed,opts){
+    opts=opts||{};
+    const pivot=new THREE.Group();
+    solarSystem.add(pivot);
+    const tex=makePlanetTexture(base,accent,opts.bands);
+    const mesh=new THREE.Mesh(
+      new THREE.SphereGeometry(size,40,40),
+      new THREE.MeshStandardMaterial({map:tex,roughness:opts.rough!=null?opts.rough:0.85,metalness:0.05})
+    );
+    mesh.position.x=dist;
+    mesh.rotation.z=(opts.tilt||0);
+    pivot.add(mesh);
+    // Atmosphere fresnel rim
+    if(opts.atmo){
+      const atmo=new THREE.Mesh(
+        new THREE.SphereGeometry(size*1.12,40,40),
+        new THREE.ShaderMaterial({
+          transparent:true,blending:THREE.AdditiveBlending,side:THREE.BackSide,depthWrite:false,
+          uniforms:{glowColor:{value:new THREE.Color(opts.atmo)}},
+          vertexShader:`varying float i;void main(){vec3 vn=normalize(normalMatrix*normal);vec3 vp=normalize((modelViewMatrix*vec4(position,1.0)).xyz);i=pow(0.65-dot(vn,-vp),2.5);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+          fragmentShader:`uniform vec3 glowColor;varying float i;void main(){gl_FragColor=vec4(glowColor,1.0)*clamp(i,0.0,1.0);}`
+        })
+      );
+      mesh.add(atmo);
+    }
+    // Orbit ring
+    const orbitGeo=new THREE.RingGeometry(dist-0.03,dist+0.03,128);
+    const orbitMat=new THREE.MeshBasicMaterial({color:'#40c4ff',transparent:true,opacity:0.12,side:THREE.DoubleSide});
+    const orbit=new THREE.Mesh(orbitGeo,orbitMat);orbit.rotation.x=Math.PI/2;
+    solarSystem.add(orbit);
+    // Saturn-style rings
+    if(opts.ring){
+      const ringGeo=new THREE.RingGeometry(size*1.5,size*2.6,80);
+      // fade the ring with vertex alpha via texture
+      const rc=document.createElement('canvas');rc.width=128;rc.height=8;
+      const rg=rc.getContext('2d');
+      for(let x=0;x<128;x++){
+        const a=0.2+0.6*Math.abs(Math.sin(x*0.4))*(x/128);
+        rg.fillStyle=`rgba(227,192,141,${a})`;rg.fillRect(x,0,1,8);
+      }
+      const rtex=new THREE.CanvasTexture(rc);
+      const ringMat=new THREE.MeshBasicMaterial({map:rtex,transparent:true,opacity:0.85,side:THREE.DoubleSide});
+      const rmesh=new THREE.Mesh(ringGeo,ringMat);
+      rmesh.rotation.x=Math.PI/2.1;rmesh.rotation.y=0.15;
+      mesh.add(rmesh);
+    }
+    planets.push({pivot,speed,mesh,spin:opts.spin||0.02});
+    return mesh;
+  }
+  // Mercury, Venus, Earth, Mars, Jupiter(bands), Saturn(bands+ring)
+  addPlanet(6,0.5,'#9c7a55','#c8a16a',0.62,{rough:1});
+  addPlanet(8.5,0.85,'#caa46a','#f0d090',0.45,{atmo:'#ffd9a0'});
+  const earth=addPlanet(11.5,0.98,'#2a6fb0','#3fae6a',0.36,{atmo:'#6fd0ff',spin:0.03});
+  addPlanet(14.5,0.7,'#b8492c','#d9755a',0.29,{rough:1});
+  addPlanet(19,1.9,'#c8a27a','#e8c61e',0.18,{bands:true,atmo:'#f0d090'});
+  addPlanet(24,1.5,'#d9c08d','#b89a5a',0.13,{bands:true,ring:true,tilt:0.3});
+
+  // Earth's moon
+  const moonPivot=new THREE.Group();
+  earth.add(moonPivot);
+  const moon=new THREE.Mesh(new THREE.SphereGeometry(0.27,24,24),new THREE.MeshStandardMaterial({map:makePlanetTexture('#b0b0b8','#888890',false),roughness:1}));
+  moon.position.x=2;moonPivot.add(moon);
+
+  solarSystem.position.set(0,12,-6);
+  solarSystem.rotation.x=0.4;
+
+
+  // ── PULSAR — bright pulsing neutron star with beams, left ──
+  const pulsarGroup=new THREE.Group();
+  const pulsarCore=new THREE.Mesh(
+    new THREE.SphereGeometry(0.7,20,20),
+    new THREE.MeshBasicMaterial({color:'#aaddff'})
+  );
+  pulsarGroup.add(pulsarCore);
+  const beamMat=new THREE.MeshBasicMaterial({color:'#88ccff',transparent:true,opacity:0.3,blending:THREE.AdditiveBlending,side:THREE.DoubleSide});
+  const beam1=new THREE.Mesh(new THREE.ConeGeometry(2,10,20,1,true),beamMat);
+  beam1.position.y=5;
+  const beam2=new THREE.Mesh(new THREE.ConeGeometry(2,10,20,1,true),beamMat);
+  beam2.position.y=-5;beam2.rotation.z=Math.PI;
+  pulsarGroup.add(beam1);pulsarGroup.add(beam2);
+  pulsarGroup.position.set(-30,12,-30);
+  pulsarGroup.rotation.z=0.6;
+  scene.add(pulsarGroup);
+
+  // ── Distant starfield sphere — cyan/blue cosmic palette ──
+  const starGeo=new THREE.BufferGeometry();
+  const starCount=4200;const sp=new Float32Array(starCount*3);const scol=new Float32Array(starCount*3);
+  const starPalette=['#7fdfff','#4fb4ff','#a0e8ff','#5fa0ff','#c0f0ff','#8b9fff','#6fffe0','#bfd8ff'];
+  for(let i=0;i<starCount;i++){
+    const i3=i*3;const r=120+Math.random()*90;
+    const theta=Math.random()*Math.PI*2,phi=Math.acos(2*Math.random()-1);
+    sp[i3]=r*Math.sin(phi)*Math.cos(theta);
+    sp[i3+1]=r*Math.sin(phi)*Math.sin(theta);
+    sp[i3+2]=r*Math.cos(phi);
+    const c=new THREE.Color(starPalette[~~(Math.random()*starPalette.length)]);
+    scol[i3]=c.r;scol[i3+1]=c.g;scol[i3+2]=c.b;
+  }
+  starGeo.setAttribute('position',new THREE.BufferAttribute(sp,3));
+  starGeo.setAttribute('color',new THREE.BufferAttribute(scol,3));
+  const starMat=new THREE.PointsMaterial({size:0.35,vertexColors:true,transparent:true,opacity:0.85,blending:THREE.AdditiveBlending,depthWrite:false});
+  scene.add(new THREE.Points(starGeo,starMat));
+
+  // ── Mid-field bright cyan stars (closer, bigger twinkle) ──
+  const midGeo=new THREE.BufferGeometry();
+  const midCount=600;const mp=new Float32Array(midCount*3);const mcol=new Float32Array(midCount*3);
+  for(let i=0;i<midCount;i++){
+    const i3=i*3;const r=50+Math.random()*60;
+    const theta=Math.random()*Math.PI*2,phi=Math.acos(2*Math.random()-1);
+    mp[i3]=r*Math.sin(phi)*Math.cos(theta);
+    mp[i3+1]=r*Math.sin(phi)*Math.sin(theta)*0.6+10;
+    mp[i3+2]=r*Math.cos(phi);
+    const c=new THREE.Color(['#00e5ff','#40c4ff','#80d8ff','#18ffff'][~~(Math.random()*4)]);
+    mcol[i3]=c.r;mcol[i3+1]=c.g;mcol[i3+2]=c.b;
+  }
+  midGeo.setAttribute('position',new THREE.BufferAttribute(mp,3));
+  midGeo.setAttribute('color',new THREE.BufferAttribute(mcol,3));
+  const midMat=new THREE.PointsMaterial({size:0.6,vertexColors:true,transparent:true,opacity:0.9,blending:THREE.AdditiveBlending,depthWrite:false});
+  const midStars=new THREE.Points(midGeo,midMat);
+  scene.add(midStars);
+
+
+  // ── Animation ──
+  let t=0;
+  function animate(){
+    t+=0.016;
+    galaxy.rotation.z+=0.0006;
+    andromeda.rotation.z+=0.0009;
+    // Solar system rotation + planet orbits
+    solarSystem.rotation.y+=0.0012;
+    planets.forEach(p=>{p.pivot.rotation.y+=p.speed*0.012;p.mesh.rotation.y+=p.spin});
+    moonPivot.rotation.y+=0.05;
+    // Sun shimmer — rotate surface + breathe corona
+    sun.rotation.y+=0.0025;
+    sunTex.offset.x+=0.0004;
+    const breathe=1+0.05*Math.sin(t*1.6);
+    corona.scale.set(16*breathe,16*breathe,1);
+    coronaWide.scale.set(26*breathe,26*breathe,1);
+    corona.material.opacity=0.8+0.1*Math.sin(t*2);
+    // Mid cyan stars twinkle
+    midStars.material.opacity=0.6+0.35*Math.abs(Math.sin(t*1.5));
+    midStars.rotation.y+=0.0003;
+    // Pulsar
+    const pulse=0.6+0.6*Math.abs(Math.sin(t*4));
+    pulsarCore.scale.setScalar(pulse);
+    beamMat.opacity=0.15+0.25*Math.abs(Math.sin(t*4));
+    pulsarGroup.rotation.y+=0.04;
+    // Smoothly shift solar system aside when book is open
+    const targetX=window.__cosmosShift||0;
+    solarSystem.position.x+=(targetX-solarSystem.position.x)*0.04;
+    const targetScale=window.__cosmosScale||1;
+    const cs=solarSystem.scale.x+(targetScale-solarSystem.scale.x)*0.04;
+    solarSystem.scale.setScalar(cs);
+    // Gentle cinematic camera sway
+    const swayMul=window.__cosmosShift?0.5:1;
+    camera.position.x=Math.sin(t*0.08)*4*swayMul;
+    camera.position.y=16+Math.sin(t*0.06)*2;
+    camera.lookAt(0,8,0);
+    renderer.render(scene,camera);
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  addEventListener('resize',()=>{
+    camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth,innerHeight);
+  });
+})();
+
+// ═══ STARFIELD ═══
+const sc=$('stars'),sx=sc.getContext('2d');let st=[];
+function rs(){sc.width=innerWidth;sc.height=innerHeight}
+addEventListener('resize',rs);rs();
+for(let i=0;i<320;i++)st.push({x:Math.random()*sc.width,y:Math.random()*sc.height,r:Math.random()*1.6+.2,a:Math.random()*.7+.3,tp:Math.random()*Math.PI*2,ts:Math.random()*.015+.004,c:['127,223,255','79,180,255','160,232,255','110,255,224','191,216,255'][~~(Math.random()*5)]});
+(function as(){sx.clearRect(0,0,sc.width,sc.height);st.forEach(s=>{s.tp+=s.ts;const a=s.a*(.5+.5*Math.sin(s.tp));sx.beginPath();sx.arc(s.x,s.y,s.r,0,Math.PI*2);sx.fillStyle=`rgba(${s.c},${a})`;sx.fill();s.y-=.012;if(s.y<-5){s.y=sc.height+5;s.x=Math.random()*sc.width}});requestAnimationFrame(as)})();
+
+// ═══ SHOOTING STARS ═══
+const ssc=$('shootingStars'),ssx=ssc.getContext('2d');let shooters=[];
+function rss(){ssc.width=innerWidth;ssc.height=innerHeight}
+addEventListener('resize',rss);rss();
+function spawnShooter(){
+  const startX=Math.random()*ssc.width,startY=Math.random()*ssc.height*.4;
+  shooters.push({x:startX,y:startY,len:Math.random()*80+60,sp:Math.random()*6+8,ang:Math.PI/4,life:1});
+}
+setInterval(()=>{if(Math.random()>.5)spawnShooter()},2800);
+(function ass(){
+  ssx.clearRect(0,0,ssc.width,ssc.height);
+  shooters.forEach((s,i)=>{
+    s.x+=Math.cos(s.ang)*s.sp;s.y+=Math.sin(s.ang)*s.sp;s.life-=.012;
+    const tx=s.x-Math.cos(s.ang)*s.len,ty=s.y-Math.sin(s.ang)*s.len;
+    const g=ssx.createLinearGradient(s.x,s.y,tx,ty);
+    g.addColorStop(0,`rgba(255,230,245,${s.life})`);g.addColorStop(1,'rgba(255,230,245,0)');
+    ssx.strokeStyle=g;ssx.lineWidth=2;ssx.beginPath();ssx.moveTo(s.x,s.y);ssx.lineTo(tx,ty);ssx.stroke();
+    if(s.life<=0||s.x>ssc.width||s.y>ssc.height)shooters.splice(i,1);
+  });
+  requestAnimationFrame(ass);
+})();
+
+// ═══ PETALS ═══
+function startPetals(){
+  const p=['🌸','🌹','💕','✨','🌺','💫','🌷','🍃','🌼','🌻','💮','🏵️'];
+  function drop(){
+    const e=document.createElement('div');e.className='petal';
+    e.textContent=p[~~(Math.random()*p.length)];
+    e.style.left=Math.random()*100+'vw';
+    e.style.fontSize=(Math.random()*14+12)+'px';
+    e.style.animationDuration=(Math.random()*5+6)+'s';
+    document.body.appendChild(e);
+    setTimeout(()=>e.remove(),12000);
+  }
+  // Denser flower rain — 2 per tick
+  setInterval(()=>{drop();drop()},650);
+}
+
+// ═══ INTRO ═══
+function playIntro(){
+  const ids=['il1','il2','il3','il4'],dly=[600,2400,4400,6600];
+  ids.forEach((id,i)=>setTimeout(()=>$(id).classList.add('v'),dly[i]));
+  setTimeout(()=>$('iHint').classList.add('v'),8200);
+}
+setTimeout(playIntro,400);
+$('intro').addEventListener('click',function(){
+  if(!$('il4').classList.contains('v')){['il1','il2','il3','il4'].forEach(id=>$(id).classList.add('v'));$('iHint').classList.add('v');return}
+  this.classList.add('out');
+  $('stage').classList.add('v');
+  // Cosmos stays vivid but shifts aside so the book doesn't cover it
+  const cosmos=$('galaxy3d');
+  cosmos.style.transition='opacity 1.6s ease';
+  cosmos.style.opacity='0.7';
+  cosmos.style.zIndex='1';
+  // Shift solar system to the right + scale down a touch (desktop) — on narrow screens push further
+  window.__cosmosShift = innerWidth<700 ? 16 : 22;
+  window.__cosmosScale = innerWidth<700 ? 0.7 : 0.85;
+  startPetals();
+  setTimeout(()=>{this.style.display='none';tryMusic()},1400);
+});
+
+// ═══ BOOK ENGINE ═══
+const leaves=[...document.querySelectorAll('.leaf')];
+const TOTAL=leaves.length;
+let cur=0;
+const labels=['cover','letter 1','letter 2','letter 3','letter 4','letter 5','letter 6'];
+function updateBook(){
+  leaves.forEach((lf,i)=>{
+    if(i<cur){lf.classList.add('flipped');lf.style.zIndex=i+1}
+    else{lf.classList.remove('flipped');lf.style.zIndex=TOTAL-i+10}
+  });
+  $('prevBtn').disabled=cur===0;
+  $('nextBtn').disabled=cur===TOTAL;
+  $('prog').textContent=cur===TOTAL?'♡ the end':labels[cur]||`page ${cur}`;
+  // Reveal the centered finale overlay at the end
+  const fo=$('finaleOverlay');
+  if(cur===TOTAL){setTimeout(()=>fo.classList.add('show'),900)}
+  else{fo.classList.remove('show')}
+}
+function nextPage(){if(cur<TOTAL){cur++;updateBook();spawnHearts(2)}}
+function prevPage(){if(cur>0){cur--;updateBook()}}
+leaves.forEach((lf,i)=>{
+  lf.addEventListener('click',e=>{
+    if(e.target.closest('.ask-btn')||e.target.closest('.no-btn')||e.target.closest('.final-btns'))return;
+    if(i===cur){nextPage()}else if(i===cur-1){prevPage()}
+  });
+});
+updateBook();
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')nextPage();if(e.key==='ArrowLeft')prevPage()});
+let tsx=0;
+document.addEventListener('touchstart',e=>{tsx=e.touches[0].clientX},{passive:true});
+document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tsx;if(Math.abs(dx)>60){dx<0?nextPage():prevPage()}},{passive:true});
+
+// ═══ YES BUTTON ═══
+$('yesBtn').addEventListener('click',e=>{
+  e.stopPropagation();
+  spawnHearts(45);
+  const b=e.target;
+  b.textContent='Forever starts now 💖∞';
+  b.style.background='linear-gradient(135deg,#c4a0f7,#f472b6,#e8a87c)';
+  // tidy up the no button if it's still flailing around
+  const nb=$('noBtn');if(nb)nb.style.display='none';
+  setTimeout(()=>{
+    const note=document.querySelector('.final-note');
+    note.textContent='// you said yes. take a screenshot 😌❤️';
+    note.style.color='var(--rose-deep)';note.style.opacity='1';
+  },600);
+});
+
+// ═══ IMPOSSIBLE "NO" BUTTON ═══
+(function(){
+  const noBtn=$('noBtn'),yesBtn=$('yesBtn');
+  if(!noBtn)return;
+  let dodges=0;
+  // teasing labels that escalate
+  const labels=['No','no?','nope ✋','try again 😏','catch me 🏃','not today 💨','impossible 🙃','give up? 🥺','just say yes 💕','you sure? 😌'];
+
+  // clamp helper — always keep fully on-screen
+  function clamp(){
+    const bw=noBtn.offsetWidth||80,bh=noBtn.offsetHeight||50,pad=12;
+    return {
+      maxX:Math.max(pad,innerWidth-bw-pad),
+      maxY:Math.max(pad,innerHeight-bh-pad),
+      bw,bh,pad
+    };
+  }
+
+  // pick a random evasion tactic each time
+  function evade(clientX,clientY){
+    // only flee once the reader is actually on the finale page
+    if(cur!==TOTAL)return;
+    dodges++;
+    const tactics=['run','blast','fade','shrink','teleport','spin','duck'];
+    let tactic=tactics[~~(Math.random()*tactics.length)];
+
+    if(!noBtn.classList.contains('flee')){
+      const r=noBtn.getBoundingClientRect();
+      noBtn.classList.add('flee');
+      noBtn.style.left=r.left+'px';
+      noBtn.style.top=r.top+'px';
+    }
+
+    const {maxX,maxY,bw,bh,pad}=clamp();
+
+    if(tactic==='run'||tactic==='teleport'||tactic==='duck'){
+      let nx,ny,tries=0;
+      do{
+        nx=pad+Math.random()*(maxX-pad);
+        ny=pad+Math.random()*(maxY-pad);
+        tries++;
+      }while(tries<14 && Math.hypot((nx+bw/2)-clientX,(ny+bh/2)-clientY)<150);
+      noBtn.style.transition=tactic==='teleport'?'opacity .15s':'left .25s ease,top .25s ease';
+      if(tactic==='teleport'){
+        noBtn.style.opacity='0';
+        setTimeout(()=>{noBtn.style.left=nx+'px';noBtn.style.top=ny+'px';noBtn.style.opacity='1'},150);
+      }else{
+        noBtn.style.left=nx+'px';noBtn.style.top=ny+'px';
+      }
+      if(tactic==='duck'){noBtn.style.transform='scale(.6) rotate(-12deg)';setTimeout(()=>noBtn.style.transform=`scale(${noBtn.dataset.scale||1})`,300)}
+    }
+    else if(tactic==='spin'){
+      noBtn.style.transition='transform .5s ease,left .25s,top .25s';
+      noBtn.style.transform='rotate(720deg) scale(.8)';
+      const nx=pad+Math.random()*(maxX-pad),ny=pad+Math.random()*(maxY-pad);
+      noBtn.style.left=nx+'px';noBtn.style.top=ny+'px';
+      setTimeout(()=>noBtn.style.transform=`scale(${noBtn.dataset.scale||1})`,520);
+    }
+    else if(tactic==='shrink'){
+      const curS=parseFloat(noBtn.dataset.scale||'1');
+      const ns=Math.max(0.35,curS-0.18);
+      noBtn.dataset.scale=ns;
+      noBtn.style.transform=`scale(${ns})`;
+      const nx=pad+Math.random()*(maxX-pad),ny=pad+Math.random()*(maxY-pad);
+      noBtn.style.left=nx+'px';noBtn.style.top=ny+'px';
+    }
+    else if(tactic==='fade'){
+      noBtn.style.opacity='0.12';
+      const nx=pad+Math.random()*(maxX-pad),ny=pad+Math.random()*(maxY-pad);
+      noBtn.style.left=nx+'px';noBtn.style.top=ny+'px';
+      setTimeout(()=>{noBtn.style.opacity='1'},700);
+    }
+    else if(tactic==='blast'){
+      blastButton();
+      noBtn.style.opacity='0';noBtn.style.pointerEvents='none';
+      const nx=pad+Math.random()*(maxX-pad),ny=pad+Math.random()*(maxY-pad);
+      setTimeout(()=>{
+        noBtn.style.left=nx+'px';noBtn.style.top=ny+'px';
+        noBtn.style.opacity='1';noBtn.style.pointerEvents='auto';
+      },650);
+    }
+    // update teasing label + grow the Yes button
+    noBtn.textContent=labels[Math.min(dodges,labels.length-1)];
+    const ys=Math.min(1.4,1+dodges*0.05);
+    yesBtn.style.transform=`scale(${ys})`;
+    yesBtn.style.boxShadow=`0 10px 30px rgba(194,94,122,${Math.min(.85,.4+dodges*.05)})`;
+  }
+
+  function blastButton(){
+    const r=noBtn.getBoundingClientRect();
+    const cx=r.left+r.width/2, cy=r.top+r.height/2;
+    const pieces=['💥','✨','💨','🌟','⭐','💫'];
+    for(let i=0;i<16;i++){
+      const s=document.createElement('div');s.className='no-shard';
+      s.textContent=pieces[~~(Math.random()*pieces.length)];
+      s.style.left=cx+'px';s.style.top=cy+'px';
+      const ang=Math.random()*Math.PI*2,dist=60+Math.random()*130;
+      s.style.setProperty('--dx',Math.cos(ang)*dist+'px');
+      s.style.setProperty('--dy',Math.sin(ang)*dist+'px');
+      s.style.setProperty('--dr',(Math.random()*720-360)+'deg');
+      document.body.appendChild(s);
+      setTimeout(()=>s.remove(),900);
+    }
+  }
+
+  // Desktop: flee on hover/approach
+  noBtn.addEventListener('mouseenter',e=>evade(e.clientX,e.clientY));
+  noBtn.addEventListener('mousemove',e=>{if(Math.random()>0.7)evade(e.clientX,e.clientY)});
+  noBtn.addEventListener('click',e=>{
+    e.preventDefault();e.stopPropagation();
+    evade(e.clientX||innerWidth/2,e.clientY||innerHeight/2);
+  });
+  // Mobile: touch makes it bolt away
+  noBtn.addEventListener('touchstart',e=>{
+    e.preventDefault();
+    const t=e.touches[0];
+    evade(t.clientX,t.clientY);
+  },{passive:false});
+  // Keep it on-screen if window resizes mid-chase
+  addEventListener('resize',()=>{
+    if(!noBtn.classList.contains('flee'))return;
+    const {maxX,maxY}=clamp();
+    noBtn.style.left=Math.min(parseFloat(noBtn.style.left)||0,maxX)+'px';
+    noBtn.style.top=Math.min(parseFloat(noBtn.style.top)||0,maxY)+'px';
+  });
+})();
+
+// ═══ HEARTS BURST ═══
+function spawnHearts(n){
+  const em=['💕','💖','💗','💓','💝','🌸','✨','💫','🌹'];
+  for(let i=0;i<n;i++){
+    setTimeout(()=>{
+      const h=document.createElement('div');h.className='burst-heart';
+      h.textContent=em[~~(Math.random()*em.length)];
+      h.style.left=(Math.random()*100)+'vw';
+      h.style.bottom='15vh';
+      h.style.fontSize=(Math.random()*22+16)+'px';
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(),1500);
+    },i*42);
+  }
+}
+
+// ═══ MUSIC ═══
+const mus=$('bgM');let mOn=false;
+function tryMusic(){mus.volume=.4;mus.play().then(()=>{mOn=true;$('mB').classList.add('on')}).catch(()=>{})}
+function toggleMusic(){if(mOn){mus.pause();mOn=false;$('mB').classList.remove('on')}else{mus.play().then(()=>{mOn=true;$('mB').classList.add('on')})}}
+
+console.log('%c💌 A book written in starlight','font-size:18px;color:#d98a9e;font-weight:bold');
+console.log('%c// for my love, my lady — only you','color:#c4a0f7');
+</script>
+</body>
+</html>
